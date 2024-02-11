@@ -5,16 +5,20 @@ import {
   ProFormText,
   useBreakpoint,
 } from "@ant-design/pro-components";
-import { Button, Divider, Layout, Tabs, theme } from "antd";
+import { Button, Divider, Layout, Tabs, message, theme } from "antd";
 import { FC, useEffect, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { setLocation } from "../store/location";
 import { setNoneState } from "../store/moduleStateSlice";
 
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+} from "firebase/auth";
 
 import logo from "../assets/GM_Logo_png (白).png";
 import Icon from "../components/Icon";
@@ -22,18 +26,25 @@ import useStyle from "../ui/uiStyle";
 import { ThemeProvider } from "antd-style";
 import GoogleSvg from "./Login_out/googleIcon";
 
+import { datebase } from "../firebase.config";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+
+const firestore = datebase;
 const { Content } = Layout;
 
 type LoginType = "Login" | "Signup";
 
 const Login_out: FC = () => {
   const [loginType, setLoginType] = useState<LoginType>("Login");
+  const [messageApi, contextHolder] = message.useMessage();
   const { styles } = useStyle();
 
   const { token } = theme.useToken();
 
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+
+  const navigate = useNavigate();
 
   const curentScreen = useBreakpoint();
   console.log(curentScreen);
@@ -46,21 +57,60 @@ const Login_out: FC = () => {
   });
 
   const formRef = useRef<ProFormInstance>();
-  const getFormateValues = () => {
-    console.log(formRef.current?.getFieldsValue());
+  // const getFormateValues = () => {
+  //   console.log(formRef.current?.getFieldsValue());
+  // };
+  // 獲取用戶輸入的註冊資訊
+  const getEmail = (): string => {
+    return formRef?.current?.getFieldValue("Email") as string;
+  };
+  const getpassword = (): string => {
+    return formRef?.current?.getFieldValue("Password") as string;
+  };
+  const getUsername = (): string => {
+    return formRef?.current?.getFieldValue("Username") as string;
   };
 
-  const onSubmit = async () => {
+  //註冊提交
+  const signupOnSubmit = async () => {
     try {
       const auth = getAuth();
-      const UserCredential = createUserWithEmailAndPassword(
+      const email = getEmail();
+      const password = getpassword();
+      const username = getUsername();
+      const UserCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+      if (auth.currentUser) {
+        updateProfile(auth.currentUser, { displayName: username });
+      }
       const user = UserCredential.user;
-    } catch (error) {}
+      const userdata = {
+        username: username,
+        email: email,
+        uid: user?.uid,
+        timestamp: serverTimestamp(),
+      };
+      await setDoc(doc(datebase, "users", user?.uid), userdata);
+      messageApi.open({
+        type: "success",
+        content: "Sign up was success",
+      });
+      navigate("/Model");
+      console.log(user);
+      console.log(username);
+    } catch (error) {
+      messageApi.open({
+        type: "error",
+        content: "Signup failed",
+      });
+      console.log(error);
+    }
   };
+
+  const loginOnSubmit = () => {};
 
   return (
     //因為登陸頁面背景特殊，所以這裡不使用全局的ThemeProvider，而是在這個頁面單獨使用ThemeProvider
@@ -74,6 +124,7 @@ const Login_out: FC = () => {
         },
       }}
     >
+      {contextHolder}
       <Layout>
         <Content>
           <LoginFormPage
@@ -104,9 +155,8 @@ const Login_out: FC = () => {
                   width: "100%",
                 },
               },
-              onSubmit: getFormateValues,
+              onSubmit: loginType === "Signup" ? signupOnSubmit : loginOnSubmit,
             }}
-            onFinish={onSubmit}
             style={{
               overflow: "hidden",
             }}
@@ -157,20 +207,19 @@ const Login_out: FC = () => {
                 { key: "Signup", label: "Signup" },
               ]}
             ></Tabs>
+            {/* 登陸頁面 */}
             {loginType === "Login" && (
               <>
                 <ProFormText
-                  name="Username"
-                  placeholder="Enter username"
+                  name="Email"
+                  placeholder="Enter Email"
                   rules={[
                     { required: true, message: "Please enter your username" },
                   ]}
                   //fieldProps為對應的input樣式
                   fieldProps={{
                     size: "large",
-                    prefix: (
-                      <Icon name="person" style={styles.loginIconColor} />
-                    ),
+                    prefix: <Icon name="email" style={styles.loginIconColor} />,
                     autoComplete: "on",
                   }}
                 />
@@ -217,13 +266,33 @@ const Login_out: FC = () => {
                 </div>
               </>
             )}
+            {/* 註冊頁面 */}
             {loginType === "Signup" && (
               <>
+                <ProFormText
+                  name="Username"
+                  placeholder="Enter username"
+                  fieldProps={{
+                    size: "large",
+                    prefix: (
+                      <Icon name="person" style={styles.loginIconColor} />
+                    ),
+                    autoComplete: "on",
+                  }}
+                  rules={[
+                    { required: true, message: "Please enter your username" },
+                  ]}
+                />
                 <ProFormText
                   name="Email"
                   placeholder="Enter email"
                   rules={[
                     { required: true, message: "Please enter your email" },
+                    {
+                      pattern:
+                        /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
+                      message: "Please enter a valid email address",
+                    },
                   ]}
                   fieldProps={{
                     size: "large",
