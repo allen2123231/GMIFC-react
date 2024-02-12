@@ -11,6 +11,7 @@ import { setNoneState } from "../store/moduleStateSlice";
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 
@@ -100,7 +101,28 @@ const Login_out: FC = () => {
     }
   };
 
-  const loginOnSubmit = () => {};
+  const loginOnSubmit = async () => {
+    try {
+      const auth = getAuth();
+      const email = getEmail();
+      const password = getpassword();
+      const userCrediential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCrediential.user) {
+        navigate("/Model");
+      }
+    } catch (error) {
+      messageApi.open({
+        type: "error",
+        content: "Login failed! Please check your email and password!",
+        duration: 10,
+      });
+      console.log(error);
+    }
+  };
 
   return (
     //因為登陸頁面背景特殊，所以這裡不使用全局的ThemeProvider，而是在這個頁面單獨使用ThemeProvider
@@ -161,15 +183,10 @@ const Login_out: FC = () => {
                       fontSize: 16,
                     }}
                   >
-                    {loginType === "Login"
-                      ? "Login with others"
-                      : "Signup with others"}
+                    OR
                   </span>
                 </Divider>
-                <ContinueWithGoogle
-                  loginType={loginType}
-                  messageApi={messageApi}
-                />
+                <ContinueWithGoogle messageApi={messageApi} />
               </>
             }
           >

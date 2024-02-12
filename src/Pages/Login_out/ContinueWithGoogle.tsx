@@ -9,14 +9,10 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 interface IContinueWithGoogleProps {
-  loginType: string;
   messageApi: MessageInstance;
 }
 
-const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({
-  loginType,
-  messageApi,
-}) => {
+const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({ messageApi }) => {
   const navigate = useNavigate();
 
   const onclick = async () => {
@@ -58,7 +54,7 @@ const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({
       }}
     >
       <GoogleSvg />
-      {loginType === "Login" ? "Login with Google" : "Signup with Google"}
+      Continue with Google
     </Button>
   );
 };
