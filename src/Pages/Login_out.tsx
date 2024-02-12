@@ -100,7 +100,7 @@ const Login_out: FC = () => {
       console.log(error);
     }
   };
-
+  //登陸提交
   const loginOnSubmit = async () => {
     try {
       const auth = getAuth();
@@ -200,7 +200,13 @@ const Login_out: FC = () => {
               ]}
             ></Tabs>
             {/* 登陸頁面 */}
-            {loginType === "Login" && <LoginContent token={token} />}
+            {loginType === "Login" && (
+              <LoginContent
+                token={token}
+                messageApi={messageApi}
+                formRef={formRef}
+              />
+            )}
             {/* 註冊頁面 */}
             {loginType === "Signup" && <SignupContent formRef={formRef} />}
           </LoginFormPage>
