@@ -1,11 +1,5 @@
-import {
-  LoginFormPage,
-  ProFormCheckbox,
-  ProFormInstance,
-  ProFormText,
-  useBreakpoint,
-} from "@ant-design/pro-components";
-import { Button, Divider, Layout, Tabs, message, theme } from "antd";
+import { LoginFormPage, ProFormInstance } from "@ant-design/pro-components";
+import { Divider, Layout, Tabs, message, theme } from "antd";
 import { FC, useEffect, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
@@ -21,15 +15,15 @@ import {
 } from "firebase/auth";
 
 import logo from "../assets/GM_Logo_png (白).png";
-import Icon from "../components/Icon";
-import useStyle from "../ui/uiStyle";
 import { ThemeProvider } from "antd-style";
-import GoogleSvg from "./Login_out/googleIcon";
 
 import { datebase } from "../firebase.config";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import ContinueWithGoogle from "./Login_out/ContinueWithGoogle";
+import LoginContent from "./Login_out/LoginContent";
+import SignupContent from "./Login_out/SignupContent";
 
-const firestore = datebase;
+// const firestore = datebase;
 const { Content } = Layout;
 
 type LoginType = "Login" | "Signup";
@@ -37,7 +31,6 @@ type LoginType = "Login" | "Signup";
 const Login_out: FC = () => {
   const [loginType, setLoginType] = useState<LoginType>("Login");
   const [messageApi, contextHolder] = message.useMessage();
-  const { styles } = useStyle();
 
   const { token } = theme.useToken();
 
@@ -45,9 +38,6 @@ const Login_out: FC = () => {
   const pathnames = location.pathname.split("/").filter((x) => x);
 
   const navigate = useNavigate();
-
-  const curentScreen = useBreakpoint();
-  console.log(curentScreen);
 
   const dispatch = useDispatch();
 
@@ -176,25 +166,10 @@ const Login_out: FC = () => {
                       : "Signup with others"}
                   </span>
                 </Divider>
-                <Button
-                  type="primary"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    height: "40px",
-                    fontSize: "16px",
-                    border: 0,
-                    background: "#393939",
-                    boxShadow: "0 0 0 0",
-                  }}
-                >
-                  <GoogleSvg />
-                  {loginType === "Login"
-                    ? "Login with Google"
-                    : "Signup with Google"}
-                </Button>
+                <ContinueWithGoogle
+                  loginType={loginType}
+                  messageApi={messageApi}
+                />
               </>
             }
           >
@@ -208,134 +183,9 @@ const Login_out: FC = () => {
               ]}
             ></Tabs>
             {/* 登陸頁面 */}
-            {loginType === "Login" && (
-              <>
-                <ProFormText
-                  name="Email"
-                  placeholder="Enter Email"
-                  rules={[
-                    { required: true, message: "Please enter your username" },
-                  ]}
-                  //fieldProps為對應的input樣式
-                  fieldProps={{
-                    size: "large",
-                    prefix: <Icon name="email" style={styles.loginIconColor} />,
-                    autoComplete: "on",
-                  }}
-                />
-                <ProFormText.Password
-                  name="Password"
-                  placeholder="Enter password"
-                  rules={[
-                    { required: true, message: "Please enter your password" },
-                  ]}
-                  fieldProps={{
-                    size: "large",
-                    prefix: <Icon name="lock" style={styles.loginIconColor} />,
-                  }}
-                />
-                <div
-                  style={
-                    curentScreen != "sm" && curentScreen != "xs"
-                      ? {
-                          paddingBottom: token.paddingXS,
-                          alignItems: "center",
-                          height: "auto",
-                        }
-                      : {
-                          paddingBottom: token.paddingSM,
-                          display: "flex",
-                          gap: token.paddingXXS,
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <ProFormCheckbox noStyle name="autoLogin">
-                    Remember me
-                  </ProFormCheckbox>
-                  <a
-                    style={{
-                      color: "#2c7def",
-                      fontSize: 16,
-                      float: "right",
-                    }}
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </>
-            )}
+            {loginType === "Login" && <LoginContent token={token} />}
             {/* 註冊頁面 */}
-            {loginType === "Signup" && (
-              <>
-                <ProFormText
-                  name="Username"
-                  placeholder="Enter username"
-                  fieldProps={{
-                    size: "large",
-                    prefix: (
-                      <Icon name="person" style={styles.loginIconColor} />
-                    ),
-                    autoComplete: "on",
-                  }}
-                  rules={[
-                    { required: true, message: "Please enter your username" },
-                  ]}
-                />
-                <ProFormText
-                  name="Email"
-                  placeholder="Enter email"
-                  rules={[
-                    { required: true, message: "Please enter your email" },
-                    {
-                      pattern:
-                        /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
-                      message: "Please enter a valid email address",
-                    },
-                  ]}
-                  fieldProps={{
-                    size: "large",
-                    prefix: <Icon name="email" style={styles.loginIconColor} />,
-                    autoComplete: "on",
-                  }}
-                />
-                <ProFormText.Password
-                  name="Password"
-                  placeholder="Enter password"
-                  rules={[
-                    { required: true, message: "Please enter your password" },
-                  ]}
-                  fieldProps={{
-                    size: "large",
-                    prefix: <Icon name="lock" style={styles.loginIconColor} />,
-                  }}
-                />
-                <ProFormText.Password
-                  name="ConfirmPassword"
-                  placeholder="Confirm password"
-                  rules={[
-                    { required: true, message: "Please enter your password" },
-                    () => ({
-                      validator: async (_, value) => {
-                        if (
-                          value !== formRef.current?.getFieldValue("Password")
-                        ) {
-                          return Promise.reject(
-                            "The two passwords do not match!"
-                          );
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
-                  fieldProps={{
-                    size: "large",
-                    prefix: <Icon name="lock" style={styles.loginIconColor} />,
-                  }}
-                />
-              </>
-            )}
+            {loginType === "Signup" && <SignupContent formRef={formRef} />}
           </LoginFormPage>
         </Content>
       </Layout>
