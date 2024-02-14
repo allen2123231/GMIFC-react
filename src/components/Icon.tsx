@@ -1,5 +1,5 @@
 import { FC } from "react";
-import useStyle from "../ui/uiStyle";
+import useStyle from "../Layout/uiStyle";
 
 interface IIconProps {
   name: string;

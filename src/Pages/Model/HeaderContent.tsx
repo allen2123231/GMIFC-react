@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Breadcrumbs from "../../components/Header_Breadcrumb";
 import { AutoComplete, Button, Col, Grid, Input, Row } from "antd";
-import useStyle from "../../ui/uiStyle";
+import useStyle from "../../Layout/uiStyle";
 
 const { useBreakpoint } = Grid;
 

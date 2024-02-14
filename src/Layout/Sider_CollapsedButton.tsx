@@ -18,6 +18,7 @@ const SiderCollapsedButton: FC = () => {
       onClick={() => {
         dispath(setCollapsed());
       }}
+      isactived={false}
     >
       {sideBarState ? (
         <Icon name="right_panel_close" style={styles.buttonIcon} />

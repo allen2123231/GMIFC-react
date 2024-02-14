@@ -49,6 +49,8 @@ function App() {
                 colorBgBase: "#122033",
                 colorText: "#ffffffd8",
                 colorPrimary: "#d70036",
+                boxShadow:
+                  "0px 1px 2px -2px rgba(0, 0, 0, 0.34), 0px 3px 6px 0px rgba(0, 0, 0, 0.3), 0px 5px 12px 4px rgba(0, 0, 0, 0.26)",
               },
               components: {
                 Layout: {

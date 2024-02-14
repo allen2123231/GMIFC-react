@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 
-import { Layout } from "antd";
+import { Layout, theme } from "antd";
 import { SiderTheme } from "antd/es/layout/Sider";
 import { createStyles, useThemeMode } from "antd-style";
 
@@ -20,15 +20,17 @@ const AppLayout: FC = () => {
     (state) => state.sidebarstate.isCollapsed
   );
   const { appearance } = useThemeMode();
+  const { token } = theme.useToken();
 
   return (
     <Layout style={{ minHeight: "100dvh" }}>
       <Sider
-        className={`shadow-xl ${
-          appearance === "dark" ? "shadow-black" : "shadow-gray-400"
-        }`}
+        // className={`shadow-xl ${
+        //   appearance === "dark" ? "shadow-black" : "shadow-gray-400"
+        // }`}
         width={160}
         collapsedWidth={48}
+        style={{ boxShadow: token.boxShadow }}
         trigger={null}
         collapsible
         collapsed={sideBarState}

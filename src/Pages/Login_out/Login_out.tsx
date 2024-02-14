@@ -5,8 +5,8 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { setLocation } from "../store/location";
-import { setNoneState } from "../store/moduleStateSlice";
+import { setLocation } from "../../store/location";
+import { setNoneState } from "../../store/moduleStateSlice";
 
 import {
   createUserWithEmailAndPassword,
@@ -15,14 +15,14 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import logo from "../assets/GM_Logo_png (白).png";
+import logo from "../../assets/GM_Logo_png (白).png";
 import { ThemeProvider } from "antd-style";
 
-import { datebase } from "../firebase.config";
+import { datebase } from "../../firebase.config";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import ContinueWithGoogle from "./Login_out/ContinueWithGoogle";
-import LoginContent from "./Login_out/LoginContent";
-import SignupContent from "./Login_out/SignupContent";
+import ContinueWithGoogle from "./ContinueWithGoogle";
+import LoginContent from "./LoginContent";
+import SignupContent from "./SignupContent";
 
 // const firestore = datebase;
 const { Content } = Layout;

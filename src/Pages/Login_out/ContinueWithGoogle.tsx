@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 import GoogleSvg from "./googleIcon";
@@ -7,6 +7,9 @@ import { MessageInstance } from "antd/es/message/interface";
 import { datebase } from "../../firebase.config";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocation } from "../../store/location";
+import { TRootState } from "../../store/store";
 
 interface IContinueWithGoogleProps {
   messageApi: MessageInstance;
@@ -14,6 +17,14 @@ interface IContinueWithGoogleProps {
 
 const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({ messageApi }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const locationState = useSelector<TRootState, string>(
+    (state) => state.locationState.location
+  );
+
+  useEffect(() => {
+    navigate(`../${locationState}`);
+  }, [locationState, navigate]);
 
   const onclick = async () => {
     try {
@@ -32,11 +43,13 @@ const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({ messageApi }) => {
           timestamp: serverTimestamp(),
         });
       }
-      navigate("/Model");
+      navigate("../Model");
+      dispatch(setLocation("Model"));
     } catch (error) {
       messageApi.error("Could not authenticate with Google");
     }
   };
+
   return (
     <Button
       type="primary"

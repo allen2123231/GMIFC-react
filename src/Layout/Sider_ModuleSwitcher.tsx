@@ -1,28 +1,22 @@
 import { Space } from "antd";
 
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { TRootState } from "../store/store";
-import {
-  setFabricationState,
-  setModelState,
-  setScheduleState,
-} from "../store/moduleStateSlice";
 
 import TooltipButton from "../components/TooltipButton";
 import Icon from "../components/Icon";
 import useStyle from "./uiStyle";
+import { setLocation } from "../store/location";
 
 const ModuleSwitcher: FC = () => {
   const { styles } = useStyle();
   const sideBarIsCollapsed = useSelector<TRootState, boolean>(
     (state) => state.sidebarstate.isCollapsed
   );
-  const moduleState = useSelector<TRootState, string>(
-    (state) => state.moduleState.isSlected
-  );
+
   const locationState = useSelector<TRootState, string>(
     (state) => state.locationState.location
   );
@@ -30,11 +24,9 @@ const ModuleSwitcher: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    moduleState !== "none"
-      ? navigate(`../${moduleState}`)
-      : navigate(`../${locationState}`);
-  }, [moduleState, locationState, navigate]);
+  const onclick = (location: string) => {
+    dispatch(setLocation(location)), navigate(`../${location}`);
+  };
 
   return (
     <Space className="#ModuleSwitcher" direction="vertical" size={1}>
@@ -45,30 +37,30 @@ const ModuleSwitcher: FC = () => {
       <Space direction="vertical" style={{ width: "100%" }}>
         <TooltipButton
           title="Model"
-          onClick={function () {
-            dispatch(setModelState());
+          onClick={() => {
+            onclick("Model");
           }}
-          isactived={moduleState === "Model"}
+          isactived={locationState === "Model"}
         >
           <Icon name="deployed_code_update" style={styles.buttonIcon} />
           <span>{sideBarIsCollapsed ? "" : "Model"}</span>
         </TooltipButton>
         <TooltipButton
           title="Fabrication"
-          isactived={moduleState === "Fabrication"}
           onClick={() => {
-            dispatch(setFabricationState());
+            onclick("Fabrication");
           }}
+          isactived={locationState === "Fabrication"}
         >
           <Icon name="precision_manufacturing" style={styles.buttonIcon} />
           <span>{sideBarIsCollapsed ? "" : "Fabrication"}</span>
         </TooltipButton>
         <TooltipButton
           title="Schedul"
-          isactived={moduleState === "Schedule"}
           onClick={() => {
-            dispatch(setScheduleState());
+            onclick("Schedule");
           }}
+          isactived={locationState === "Schedule"}
         >
           <Icon name="event_note" style={styles.buttonIcon} />
           <span>{sideBarIsCollapsed ? "" : "Schedul"}</span>

@@ -7,7 +7,7 @@ import {
 import { FC, useState } from "react";
 import Icon from "../../components/Icon";
 import { Button, GlobalToken, Modal } from "antd";
-import useStyle from "../../ui/uiStyle";
+import useStyle from "../../Layout/uiStyle";
 import { MessageInstance } from "antd/es/message/interface";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 

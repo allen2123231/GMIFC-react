@@ -6,12 +6,14 @@ import SiderCollapsedButton from "./Sider_CollapsedButton";
 import ModeSwitcher from "./Sider_ThemeModeSwitcher";
 import LoginButton from "./Sider_LoginButton";
 import ToolList from "./Sider_ToolList";
+import HomeButton from "./Sider_HomeButton";
 
 const SiderContent: FC = () => {
   return (
     <>
       <Flex gap="middle" vertical={true} style={{ height: "100%" }}>
         <CompanyLogo />
+        <HomeButton />
         <ModuleSwitcher />
         <ToolList />
         <Flex

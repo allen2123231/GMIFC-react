@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import { FC } from "react";
-import HeaderContent_Fabrication from "./Fabrication/HeaderContent";
-import useStyle from "./layout";
+import HeaderContent_Fabrication from "./HeaderContent";
+import useStyle from "../layout";
 
 const { Header, Content } = Layout;
 

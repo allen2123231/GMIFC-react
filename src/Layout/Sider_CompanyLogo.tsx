@@ -6,17 +6,24 @@ import lightcollapsedImg from "../assets/GM_LogoSimple_png (彩).png";
 import { useThemeMode } from "antd-style";
 import { useSelector } from "react-redux";
 import { TRootState } from "../store/store";
+import { theme } from "antd";
 
 const CompanyLogo: FC = () => {
   const { appearance } = useThemeMode();
   const sideBarState = useSelector<TRootState, boolean>(
     (state) => state.sidebarstate.isCollapsed
   );
+  const { token } = theme.useToken();
 
   return (
     <div
       className="CompanyLogo"
-      style={{ display: "flex", justifyContent: "center", marginTop: "0.7rem" }}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "0.7rem",
+        marginBottom: token.marginSM,
+      }}
     >
       {appearance === "dark" ? (
         sideBarState ? (

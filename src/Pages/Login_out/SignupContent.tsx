@@ -1,7 +1,7 @@
 import { ProFormInstance, ProFormText } from "@ant-design/pro-components";
 import { FC } from "react";
 import Icon from "../../components/Icon";
-import useStyle from "../../ui/uiStyle";
+import useStyle from "../../Layout/uiStyle";
 
 interface SignupContentProps {
   formRef: React.MutableRefObject<ProFormInstance | undefined>;

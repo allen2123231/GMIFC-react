@@ -3,7 +3,7 @@ import { FC } from "react";
 import { useSelector } from "react-redux";
 import { TRootState } from "../store/store";
 import { useThemeMode } from "antd-style";
-import useStyle from "../ui/uiStyle";
+import useStyle from "../Layout/uiStyle";
 
 interface ITooltipButtonProps {
   title: string;

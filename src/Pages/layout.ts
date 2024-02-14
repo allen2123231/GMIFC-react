@@ -6,11 +6,12 @@ const useStyle = createStyles(({ token }) => {
       display: "flex",
       justifyContent: "left",
       alignItems: "center",
-      padding: "0 16px",
+      paddingInline: token.paddingLG,
       background: token.colorBgLayout,
     },
     content: {
-      padding: "0 16px",
+      paddingInline: token.paddingLG,
+      paddingBlock: token.paddingMD,
       background: token.colorBgLayout,
     },
   };
