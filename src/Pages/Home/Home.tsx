@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import { FC, useEffect } from "react";
-import useStyle from "../layout";
+import useStyle from "../layoutStyle";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLocation } from "../../store/location";

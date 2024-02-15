@@ -3,7 +3,7 @@ import { FC } from "react";
 import { Layout } from "antd";
 
 import HeaderContent from "./Schedule_HeaderContent";
-import useStyle from "../layout";
+import useStyle from "../layoutStyle";
 
 const { Header, Content } = Layout;
 

@@ -14,6 +14,10 @@ const useStyle = createStyles(({ token }) => {
       paddingBlock: token.paddingMD,
       background: token.colorBgLayout,
     },
+    card: {
+      height: "100%",
+      boxShadow: token.boxShadow,
+    },
   };
 });
 

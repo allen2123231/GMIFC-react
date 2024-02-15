@@ -4,17 +4,45 @@ import {
   ProFormText,
   useBreakpoint,
 } from "@ant-design/pro-components";
-import { Avatar, Button, Col, Flex, theme } from "antd";
-import { FC } from "react";
+import { Avatar, Button, Col, Flex, message, theme } from "antd";
+import { FC, useState } from "react";
+import useStyle from "../layoutStyle";
+
+import ForgotPasswordModal from "../Cridential/ForgotPasswordModal";
+import PasswordCheck from "../Cridential/PasswordCheck";
 
 const HomeContent: FC = () => {
+  const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [diseditabled, setDisEditabled] = useState(true);
+
+  const [messageApi, contextHolder] = message.useMessage();
+
   const { token } = theme.useToken();
+  const { styles } = useStyle();
+
   const curentScreen = useBreakpoint();
   const allScreen = ["xs", "sm", "md", "lg", "xl", "xxl"];
   const tempArry = Array.from(allScreen);
   const horizontalScreen = tempArry.splice(4);
   const verticalScreen = tempArry;
-  console.log(horizontalScreen);
+
+  const handleEdit = async () => {
+    setShowPasswordCheck(true);
+  };
+  const makeEditabled = () => {
+    setDisEditabled(false);
+  };
+  const handleModalCancel = () => {
+    setShowPasswordCheck(false);
+  };
+  const handleForgotPassword = () => {
+    setShowForgotPassword(true);
+  };
+  const handleForgotPasswordCancel = () => {
+    setShowForgotPassword(false);
+  };
+
   console.log(verticalScreen);
   console.log(curentScreen);
   return (
@@ -25,32 +53,33 @@ const HomeContent: FC = () => {
       }}
       vertical={verticalScreen.includes(curentScreen ? curentScreen : "")}
     >
+      {contextHolder}
       <Col flex="auto">
         <ProCard
           title="Welcome to GMIFC"
           headStyle={{
-            paddingInline: token.paddingSM,
+            paddingInline: token.paddingMD,
             paddingTop: token.paddingSM,
           }}
-          style={{
-            height: "100%",
-            boxShadow: token.boxShadow,
-          }}
-          // className="shadow-xl "
+          className={styles.card}
         />
       </Col>
       <Col>
         <ProCard
           title="Profile"
-          extra={<Button size="small">Edit</Button>}
+          extra={
+            <Button size="small" onClick={handleEdit}>
+              Edit
+            </Button>
+          }
           headStyle={{
-            paddingInline: token.paddingSM,
+            paddingInline: token.paddingMD,
             paddingTop: token.paddingSM,
           }}
           bodyStyle={{
             padding: token.paddingSM,
           }}
-          style={{ height: "100%", boxShadow: token.boxShadow }}
+          className={styles.card}
         >
           <Flex
             justify="center"
@@ -79,36 +108,30 @@ const HomeContent: FC = () => {
                   name="name"
                   label="Name:"
                   initialValue="Muhammad Usman"
-                  disabled
+                  disabled={diseditabled}
                 />
                 <ProFormText
                   // formItemProps={{ style: { marginBottom: "0px" } }}
                   name="email"
                   label="Email"
-                  disabled
+                  disabled={diseditabled}
+                />
+                <PasswordCheck
+                  afterSuccess={makeEditabled}
+                  showPasswordCheck={showPasswordCheck}
+                  handleModalCancel={handleModalCancel}
+                  handleForgotPassword={handleForgotPassword}
+                  messageApi={messageApi}
+                />
+                <ForgotPasswordModal
+                  messageApi={messageApi}
+                  openModal={showForgotPassword}
+                  handleCancel={handleForgotPasswordCancel}
                 />
               </ProForm>
             )}
           </Flex>
         </ProCard>
-        {/* <Card
-          title="Profile"
-          style={{ height: "100%", boxShadow: token.boxShadow }}
-        >
-          <Meta
-            avatar={
-              <Avatar
-                size={{ xs: 24, sm: 32, md: 40, lg: 100, xl: 150, xxl: 200 }}
-              />
-            }
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingInlineEnd: "0px",
-            }}
-          />
-        </Card> */}
       </Col>
     </Flex>
   );
