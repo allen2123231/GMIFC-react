@@ -1,46 +1,87 @@
 import {
   ProCard,
   ProForm,
+  ProFormInstance,
   ProFormText,
   useBreakpoint,
 } from "@ant-design/pro-components";
 import { Avatar, Button, Col, Flex, message, theme } from "antd";
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import useStyle from "../layoutStyle";
 
 import ForgotPasswordModal from "../Cridential/ForgotPasswordModal";
 import PasswordCheck from "../Cridential/PasswordCheck";
+import { getAuth, updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
+import { datebase } from "../../firebase.config";
 
 const HomeContent: FC = () => {
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [diseditabled, setDisEditabled] = useState(true);
+  const [showSubmit, setShowSubmit] = useState(false);
 
   const [messageApi, contextHolder] = message.useMessage();
 
   const { token } = theme.useToken();
   const { styles } = useStyle();
 
+  const formRef = useRef<ProFormInstance>();
   const curentScreen = useBreakpoint();
   const allScreen = ["xs", "sm", "md", "lg", "xl", "xxl"];
   const tempArry = Array.from(allScreen);
-  const horizontalScreen = tempArry.splice(4);
+  const horizontalScreen = tempArry.splice(2);
   const verticalScreen = tempArry;
 
+  const auth = getAuth();
+
+  //按下編輯按鈕跳出密碼確認視窗
   const handleEdit = async () => {
     setShowPasswordCheck(true);
   };
+  //設定編輯狀態
   const makeEditabled = () => {
     setDisEditabled(false);
   };
+  //身分驗證成功後執行的函數
+  const afterSuccess = () => {
+    makeEditabled();
+    handleShowSubmit();
+  };
+  //顯示Proform按鈕
+  const handleShowSubmit = () => {
+    setShowSubmit(true);
+  };
+  //關閉密碼確認視窗
   const handleModalCancel = () => {
     setShowPasswordCheck(false);
   };
+  //顯示忘記密碼視窗
   const handleForgotPassword = () => {
     setShowForgotPassword(true);
   };
+  //關閉忘記密碼視窗
   const handleForgotPasswordCancel = () => {
     setShowForgotPassword(false);
+  };
+
+  const applyChange = async () => {
+    try {
+      const curName = formRef.current?.getFieldValue("name");
+      if (auth.currentUser) {
+        if (auth.currentUser.displayName !== curName) {
+          await updateProfile(auth.currentUser, { displayName: curName });
+        }
+        const docRef = doc(datebase, "users", auth.currentUser?.uid);
+        await updateDoc(docRef, { username: curName });
+        messageApi.success("Profile updated");
+        setDisEditabled(true);
+        setShowSubmit(false);
+      }
+    } catch (error) {
+      console.log(error);
+      messageApi.error("Could not update your profile");
+    }
   };
 
   console.log(verticalScreen);
@@ -68,9 +109,13 @@ const HomeContent: FC = () => {
         <ProCard
           title="Profile"
           extra={
-            <Button size="small" onClick={handleEdit}>
-              Edit
-            </Button>
+            verticalScreen.includes(curentScreen ?? "") ? (
+              <Button size="small"> Show detail</Button>
+            ) : (
+              <Button size="small" onClick={handleEdit}>
+                Edit
+              </Button>
+            )
           }
           headStyle={{
             paddingInline: token.paddingMD,
@@ -95,7 +140,22 @@ const HomeContent: FC = () => {
             {curentScreen != "xs" && (
               <ProForm
                 size="small"
-                submitter={false}
+                formRef={formRef}
+                submitter={{
+                  render: () => {
+                    return [
+                      showSubmit && (
+                        <Button
+                          type="primary"
+                          onClick={applyChange}
+                          style={{ background: token.colorPrimary }}
+                        >
+                          Apply Change
+                        </Button>
+                      ),
+                    ];
+                  },
+                }}
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -107,17 +167,18 @@ const HomeContent: FC = () => {
                   formItemProps={{ style: { marginBottom: "8px" } }}
                   name="name"
                   label="Name:"
-                  initialValue="Muhammad Usman"
+                  initialValue={auth.currentUser?.displayName}
                   disabled={diseditabled}
                 />
                 <ProFormText
                   // formItemProps={{ style: { marginBottom: "0px" } }}
                   name="email"
                   label="Email"
+                  initialValue={auth.currentUser?.email}
                   disabled={diseditabled}
                 />
                 <PasswordCheck
-                  afterSuccess={makeEditabled}
+                  afterSuccess={afterSuccess}
                   showPasswordCheck={showPasswordCheck}
                   handleModalCancel={handleModalCancel}
                   handleForgotPassword={handleForgotPassword}
