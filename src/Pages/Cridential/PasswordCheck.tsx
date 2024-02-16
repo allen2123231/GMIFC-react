@@ -3,7 +3,7 @@ import {
   ProFormInstance,
   ProFormText,
 } from "@ant-design/pro-components";
-import { Button, Modal, theme } from "antd";
+import { Button, Modal } from "antd";
 import Icon from "../../components/Icon";
 import { FC, useRef } from "react";
 import useStyle from "../../Layout/uiStyle";
@@ -29,7 +29,6 @@ const PasswordCheck: FC<PasswordCheckProps> = ({
   handleForgotPassword,
   messageApi,
 }) => {
-  const { token } = theme.useToken();
   const { styles } = useStyle();
 
   const formRef = useRef<ProFormInstance>();
@@ -52,6 +51,7 @@ const PasswordCheck: FC<PasswordCheckProps> = ({
       afterSuccess();
     } catch (error) {
       console.log(error);
+      messageApi.error("Password check failed");
     }
   };
 
@@ -60,11 +60,6 @@ const PasswordCheck: FC<PasswordCheckProps> = ({
       title="Check your password!"
       open={showPasswordCheck}
       destroyOnClose={true}
-      okText="Submit"
-      okButtonProps={{
-        style: { background: token.colorPrimary },
-      }}
-      onOk={handleModalSummit}
       onCancel={handleModalCancel}
       maskClosable={true}
       footer={[
@@ -75,12 +70,7 @@ const PasswordCheck: FC<PasswordCheckProps> = ({
         >
           Forgot password ?
         </Button>,
-        <Button
-          key="Submit"
-          type="primary"
-          onClick={handleModalSummit}
-          style={{ background: token.colorPrimary }}
-        >
+        <Button key="Submit" type="primary" onClick={handleModalSummit}>
           Submit
         </Button>,
       ]}

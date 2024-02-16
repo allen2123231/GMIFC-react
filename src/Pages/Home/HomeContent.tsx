@@ -14,6 +14,7 @@ import PasswordCheck from "../Cridential/PasswordCheck";
 import { getAuth, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { datebase } from "../../firebase.config";
+import AssestManagement from "./AssestManagement";
 
 const HomeContent: FC = () => {
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
@@ -97,13 +98,19 @@ const HomeContent: FC = () => {
       {contextHolder}
       <Col flex="auto">
         <ProCard
-          title="Welcome to GMIFC"
+          title="Assests management"
           headStyle={{
             paddingInline: token.paddingMD,
             paddingTop: token.paddingSM,
           }}
+          bodyStyle={{
+            paddingInline: token.paddingMD,
+            paddingTop: token.paddingSM,
+          }}
           className={styles.card}
-        />
+        >
+          <AssestManagement />
+        </ProCard>
       </Col>
       <Col>
         <ProCard
@@ -122,7 +129,8 @@ const HomeContent: FC = () => {
             paddingTop: token.paddingSM,
           }}
           bodyStyle={{
-            padding: token.paddingSM,
+            paddingInline: token.paddingMD,
+            paddingTop: token.paddingSM,
           }}
           className={styles.card}
         >

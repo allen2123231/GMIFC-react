@@ -35,6 +35,7 @@ const ForgotPasswordModal: FC<ForgotPasswordProps> = ({
       console.log(email);
       await sendPasswordResetEmail(auth, email);
       messageApi.success("Email sent successfully");
+      handleCancel();
 
       // setOpenModal(false);
     } catch (error) {
