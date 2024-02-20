@@ -10,9 +10,9 @@ import HomeButton from "./Sider_HomeButton";
 
 const SiderContent: FC = () => {
   return (
-    <>
-      <Flex gap="middle" vertical={true} style={{ height: "100%" }}>
-        <CompanyLogo />
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <CompanyLogo />
+      <Flex gap="small" vertical={true} style={{ flex: "1" }}>
         <HomeButton />
         <ModuleSwitcher />
         <ToolList />
@@ -27,7 +27,7 @@ const SiderContent: FC = () => {
           <ModeSwitcher />
         </Flex>
       </Flex>
-    </>
+    </div>
   );
 };
 

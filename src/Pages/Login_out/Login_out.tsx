@@ -15,7 +15,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import logo from "../../assets/GM_Logo_png (白).png";
+import logo from "../../assets/img/GM_Logo_png (白).png";
 import { ThemeProvider } from "antd-style";
 
 import { datebase } from "../../firebase.config";

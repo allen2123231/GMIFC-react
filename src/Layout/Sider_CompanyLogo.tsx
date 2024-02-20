@@ -1,8 +1,8 @@
 import { FC } from "react";
-import darkImg from "../assets/GM_Logo_png (白).png";
-import darkcollapsedImg from "../assets/GM_LogoSimple_png (白).png";
-import lightImg from "../assets/GM_Logo_png (彩).png";
-import lightcollapsedImg from "../assets/GM_LogoSimple_png (彩).png";
+import darkImg from "../assets/img/GM_Logo_png (白).png";
+import darkcollapsedImg from "../assets/img/GM_LogoSimple_png (白).png";
+import lightImg from "../assets/img/GM_Logo_png (彩).png";
+import lightcollapsedImg from "../assets/img/GM_LogoSimple_png (彩).png";
 import { useThemeMode } from "antd-style";
 import { useSelector } from "react-redux";
 import { TRootState } from "../store/store";

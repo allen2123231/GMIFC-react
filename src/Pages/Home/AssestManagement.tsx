@@ -1,28 +1,24 @@
-import { ProCard } from "@ant-design/pro-components";
-import { Button, Flex } from "antd";
+import { Flex } from "antd";
 import { FC } from "react";
-import Icon from "../../components/Icon";
-import useStyle from "../../Layout/uiStyle";
+import AssestListing, { AssestListingProps } from "./AssestListing";
 
-const AssestManagement: FC = () => {
-  const { styles } = useStyle();
+// const AssestListingData = [
+//   { title: "Model", iconName: "deployed_code_update" },
+//   { title: "Fabrication", iconName: "precision_manufacturing" },
+// ];
+
+export type TAssestListingData = AssestListingProps;
+
+interface AssestManagementProps {
+  listData: TAssestListingData[];
+}
+
+const AssestManagement: FC<AssestManagementProps> = ({ listData }) => {
   return (
     <Flex vertical style={{ height: "100%" }}>
-      <Flex vertical style={{ flex: 1 }}>
-        <ProCard
-          title={
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Icon name="deployed_code_update" style={styles.colorText} />
-              <span>Model</span>
-            </div>
-          }
-          extra={<Button size="small">Create</Button>}
-          headStyle={{ fontSize: 16 }}
-          style={{ flex: 1 }}
-        ></ProCard>
-      </Flex>
-      <Flex style={{ flex: 1 }}> </Flex>
-      <Flex style={{ flex: 1 }}> </Flex>
+      {listData.map((data, key) => (
+        <AssestListing title={data.title} iconName={data.iconName} key={key} />
+      ))}
     </Flex>
   );
 };
