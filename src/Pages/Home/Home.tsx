@@ -25,7 +25,7 @@ const Home: FC = () => {
       {/* <Header className={styles.header}>
         <Breadcrumb items={[{ title: "Home" }]} />
       </Header> */}
-      <Content className={styles.content}>
+      <Content className={styles.content} style={{ height: "100vh" }}>
         <HomeContent />
       </Content>
     </Layout>

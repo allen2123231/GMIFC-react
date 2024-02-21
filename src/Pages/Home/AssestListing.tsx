@@ -1,10 +1,11 @@
 import { ProCard, useBreakpoint } from "@ant-design/pro-components";
-import { Button, Col, Flex, Row, theme } from "antd";
+import { Avatar, Button, Card, Col, Flex, List, Row, theme } from "antd";
 import { FC, useEffect, useState } from "react";
 import Icon from "../../components/Icon";
 import useStyle from "../../Layout/uiStyle";
 import { useSelector } from "react-redux";
 import { TRootState } from "../../store/store";
+import { PlusOutlined } from "@ant-design/icons";
 
 export interface AssestListingProps {
   title: string;
@@ -40,17 +41,28 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
   );
   const limitScreenSize = curscreen === "xs" && sidebarisCollapsed == false;
   console.log(curscreen);
-  useEffect(() => {
-    const middleScreen = ["md", "lg"];
 
-    middleScreen.includes(curscreen ? curscreen : "")
-      ? setColcount(2)
-      : curscreen === "xl"
-      ? setColcount(4)
-      : curscreen === "xxl"
-      ? setColcount(6)
-      : setColcount(2);
-  }, [curscreen]);
+  const list: any[] = [];
+  for (let i = 1; i < 4; i += 1) {
+    list.push({
+      id: i,
+      title: "卡片列表",
+      description:
+        "Umi@4 实战教程，专门针对中后台项目零基础的朋友，不管你是前端还是后端，看完这个系列你也有能力合理“抗雷”，“顶坑”",
+    });
+  }
+
+  // useEffect(() => {
+  //   const middleScreen = ["md", "lg"];
+
+  //   middleScreen.includes(curscreen ? curscreen : "")
+  //     ? setColcount(2)
+  //     : curscreen === "xl"
+  //     ? setColcount(4)
+  //     : curscreen === "xxl"
+  //     ? setColcount(6)
+  //     : setColcount(2);
+  // }, [curscreen]);
   return (
     <Flex vertical style={{ flex: 1 }}>
       <ProCard
@@ -77,12 +89,49 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
         }}
         style={{ flex: 1 }}
       >
-        <Row
-          justify="center"
-          style={{ height: "100%" }}
-          gutter={token.paddingMD}
-        >
-          {/* {cols} */}
+        <Row justify="center" gutter={token.paddingMD}>
+          <List
+            grid={{
+              gutter: token.paddingSM,
+              xs: 1,
+              sm: 2,
+              md: 2,
+              lg: 3,
+              xl: 6,
+              xxl: 6,
+            }}
+            style={{ height: "100%" }}
+            dataSource={[{}, ...list]}
+            renderItem={(item) => {
+              if (item && item.id) {
+                return (
+                  <List.Item key={item.id}>
+                    <Card hoverable style={{ width: "100%", height: "100%" }}>
+                      <Card.Meta
+                        avatar={
+                          <Avatar
+                            size={48}
+                            src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png"
+                          />
+                        }
+                        title={<a>{item.title}</a>}
+                      />
+                    </Card>
+                  </List.Item>
+                );
+              }
+              return (
+                <List.Item>
+                  <Button
+                    type="dashed"
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    <PlusOutlined /> 新增产品
+                  </Button>
+                </List.Item>
+              );
+            }}
+          ></List>
         </Row>
       </ProCard>
     </Flex>
