@@ -1,11 +1,12 @@
 import { ProCard, useBreakpoint } from "@ant-design/pro-components";
-import { Avatar, Button, Card, Col, Flex, List, Row, theme } from "antd";
-import { FC, useEffect, useState } from "react";
+import { Avatar, Button, Card, Col, Flex, List, theme } from "antd";
+import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Icon from "../../components/Icon";
 import useStyle from "../../Layout/uiStyle";
 import { useSelector } from "react-redux";
 import { TRootState } from "../../store/store";
 import { PlusOutlined } from "@ant-design/icons";
+import { useThemeMode } from "antd-style";
 
 export interface AssestListingProps {
   title: string;
@@ -14,7 +15,12 @@ export interface AssestListingProps {
 
 const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
   const { styles } = useStyle();
+  const { appearance } = useThemeMode();
   const { token } = theme.useToken();
+
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const [height, setHeight] = useState(0);
 
   const curscreen = useBreakpoint();
 
@@ -42,8 +48,25 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
   const limitScreenSize = curscreen === "xs" && sidebarisCollapsed == false;
   console.log(curscreen);
 
-  const list: any[] = [];
-  for (let i = 1; i < 4; i += 1) {
+  useLayoutEffect(() => {
+    setHeight((divRef.current as HTMLDivElement)?.offsetHeight);
+  }, []);
+  console.log(height);
+
+  useEffect(() => {
+    const middleScreen = ["md", "lg"];
+
+    middleScreen.includes(curscreen ? curscreen : "")
+      ? setColcount(2)
+      : curscreen === "xl"
+      ? setColcount(4)
+      : curscreen === "xxl"
+      ? setColcount(6)
+      : setColcount(2);
+  }, [curscreen]);
+
+  const list: { id: number; title: string; description: string }[] = [];
+  for (let i = 1; i < colcount; i += 1) {
     list.push({
       id: i,
       title: "卡片列表",
@@ -51,18 +74,6 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
         "Umi@4 实战教程，专门针对中后台项目零基础的朋友，不管你是前端还是后端，看完这个系列你也有能力合理“抗雷”，“顶坑”",
     });
   }
-
-  // useEffect(() => {
-  //   const middleScreen = ["md", "lg"];
-
-  //   middleScreen.includes(curscreen ? curscreen : "")
-  //     ? setColcount(2)
-  //     : curscreen === "xl"
-  //     ? setColcount(4)
-  //     : curscreen === "xxl"
-  //     ? setColcount(6)
-  //     : setColcount(2);
-  // }, [curscreen]);
   return (
     <Flex vertical style={{ flex: 1 }}>
       <ProCard
@@ -85,28 +96,31 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
         bodyStyle={{
           paddingInline: token.paddingXS,
           paddingTop: token.paddingXS,
-          paddingBottom: token.paddingLG,
+          paddingBottom: 0,
         }}
         style={{ flex: 1 }}
       >
-        <Row justify="center" gutter={token.paddingMD}>
+        <div ref={divRef} style={{ height: "100%" }}>
           <List
             grid={{
               gutter: token.paddingSM,
-              xs: 1,
-              sm: 2,
-              md: 2,
-              lg: 3,
-              xl: 6,
-              xxl: 6,
+              column: colcount,
             }}
             style={{ height: "100%" }}
             dataSource={[{}, ...list]}
             renderItem={(item) => {
-              if (item && item.id) {
+              if (item && (item as { id: number }).id) {
                 return (
-                  <List.Item key={item.id}>
-                    <Card hoverable style={{ width: "100%", height: "100%" }}>
+                  <List.Item key={(item as { id: number }).id}>
+                    <Card
+                      hoverable
+                      style={{
+                        width: "100%",
+                        height: height * 0.87,
+                        backgroundColor:
+                          appearance === "dark" ? "#223c5f" : "#f0f6ff",
+                      }}
+                    >
                       <Card.Meta
                         avatar={
                           <Avatar
@@ -114,7 +128,19 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
                             src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png"
                           />
                         }
-                        title={<a>{item.title}</a>}
+                        title={
+                          <a>
+                            {
+                              (
+                                item as {
+                                  id: number;
+                                  title: string;
+                                  description: string;
+                                }
+                              ).title
+                            }
+                          </a>
+                        }
                       />
                     </Card>
                   </List.Item>
@@ -124,7 +150,13 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
                 <List.Item>
                   <Button
                     type="dashed"
-                    style={{ width: "100%", height: "100%" }}
+                    style={{
+                      width: "100%",
+                      height: height * 0.87,
+                      boxShadow: "none",
+                      backgroundColor:
+                        appearance === "dark" ? "#223c5f" : "#f0f6ff",
+                    }}
                   >
                     <PlusOutlined /> 新增产品
                   </Button>
@@ -132,7 +164,7 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
               );
             }}
           ></List>
-        </Row>
+        </div>
       </ProCard>
     </Flex>
   );
