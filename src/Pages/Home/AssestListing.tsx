@@ -47,12 +47,11 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
   );
   const limitScreenSize = curscreen === "xs" && sidebarisCollapsed == false;
   console.log(curscreen);
-
+  // 獲取元素尺寸
   useLayoutEffect(() => {
     setHeight((divRef.current as HTMLDivElement)?.offsetHeight);
   }, []);
-  console.log(height);
-
+  // 依屏幕大小設置行數
   useEffect(() => {
     const middleScreen = ["md", "lg"];
 
