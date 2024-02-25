@@ -1,30 +1,40 @@
 import { ProCard, useBreakpoint } from "@ant-design/pro-components";
-import { Avatar, Button, Card, Col, Flex, List, theme } from "antd";
-import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button, Card, Col, Flex, List, theme } from "antd";
+import { FC, useEffect, useState } from "react";
 import Icon from "../../components/Icon";
 import useStyle from "../../Layout/uiStyle";
 import { useSelector } from "react-redux";
 import { TRootState } from "../../store/store";
 import { PlusOutlined } from "@ant-design/icons";
 import { useThemeMode } from "antd-style";
+import ModelCreateForm from "./ModelCreateForm";
 
 export interface AssestListingProps {
   title: string;
   iconName: string;
+  totalHeight: number | undefined;
 }
 
-const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
+const AssestListing: FC<AssestListingProps> = ({
+  title,
+  iconName,
+  totalHeight,
+}) => {
   const { styles } = useStyle();
   const { appearance } = useThemeMode();
   const { token } = theme.useToken();
 
-  const divRef = useRef<HTMLDivElement>(null);
-
-  const [height, setHeight] = useState(0);
-
   const curscreen = useBreakpoint();
 
   const [colcount, setColcount] = useState(1);
+  const [modelformVisible, setModelformVisible] = useState(false);
+
+  const handelmodelcreate = () => {
+    setModelformVisible(true);
+  };
+
+  const cardHeight = totalHeight ? totalHeight / 3 - 34 - 30 : 0;
+  console.log(cardHeight);
 
   const cols = [];
   for (let i = 0; i < colcount; i++) {
@@ -47,16 +57,14 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
   );
   const limitScreenSize = curscreen === "xs" && sidebarisCollapsed == false;
   console.log(curscreen);
-  // 獲取元素尺寸
-  useLayoutEffect(() => {
-    setHeight((divRef.current as HTMLDivElement)?.offsetHeight);
-  }, []);
+  console.log(totalHeight);
+
   // 依屏幕大小設置行數
   useEffect(() => {
     const middleScreen = ["md", "lg"];
 
     middleScreen.includes(curscreen ? curscreen : "")
-      ? setColcount(2)
+      ? setColcount(3)
       : curscreen === "xl"
       ? setColcount(4)
       : curscreen === "xxl"
@@ -86,7 +94,7 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
             )}
           </div>
         }
-        extra={<Button size="small">Create</Button>}
+        // extra={<Button size="small">Create</Button>}
         headStyle={{
           paddingInline: token.paddingXS,
           paddingTop: 0,
@@ -99,71 +107,68 @@ const AssestListing: FC<AssestListingProps> = ({ title, iconName }) => {
         }}
         style={{ flex: 1 }}
       >
-        <div ref={divRef} style={{ height: "100%" }}>
-          <List
-            grid={{
-              gutter: token.paddingSM,
-              column: colcount,
-            }}
-            style={{ height: "100%" }}
-            dataSource={[{}, ...list]}
-            renderItem={(item) => {
-              if (item && (item as { id: number }).id) {
-                return (
-                  <List.Item key={(item as { id: number }).id}>
-                    <Card
-                      hoverable
-                      style={{
-                        width: "100%",
-                        height: height * 0.87,
-                        backgroundColor:
-                          appearance === "dark" ? "#223c5f" : "#f0f6ff",
-                      }}
-                    >
-                      <Card.Meta
-                        avatar={
-                          <Avatar
-                            size={48}
-                            src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png"
-                          />
-                        }
-                        title={
-                          <a>
-                            {
-                              (
-                                item as {
-                                  id: number;
-                                  title: string;
-                                  description: string;
-                                }
-                              ).title
-                            }
-                          </a>
-                        }
-                      />
-                    </Card>
-                  </List.Item>
-                );
-              }
+        <List
+          grid={{
+            gutter: token.paddingSM,
+            column: colcount,
+          }}
+          style={{ height: "100%" }}
+          dataSource={[{}, ...list]}
+          renderItem={(item) => {
+            if (item && (item as { id: number }).id) {
               return (
-                <List.Item>
-                  <Button
-                    type="dashed"
+                <List.Item key={(item as { id: number }).id}>
+                  <Card
+                    hoverable
                     style={{
                       width: "100%",
-                      height: height * 0.87,
-                      boxShadow: "none",
+                      height: cardHeight,
                       backgroundColor:
                         appearance === "dark" ? "#223c5f" : "#f0f6ff",
                     }}
                   >
-                    <PlusOutlined /> 新增产品
-                  </Button>
+                    <Card.Meta
+                      title={
+                        <a>
+                          {
+                            (
+                              item as {
+                                id: number;
+                                title: string;
+                                description: string;
+                              }
+                            ).title
+                          }
+                        </a>
+                      }
+                    />
+                  </Card>
                 </List.Item>
               );
-            }}
-          ></List>
-        </div>
+            }
+            return (
+              <List.Item>
+                <Button
+                  type="dashed"
+                  onClick={title === "Model" ? handelmodelcreate : () => {}}
+                  style={{
+                    width: "100%",
+                    height: cardHeight,
+                    boxShadow: "none",
+                    backgroundColor:
+                      appearance === "dark" ? "#223c5f" : "#f0f6ff",
+                  }}
+                >
+                  <PlusOutlined /> 新增产品
+                </Button>
+                <ModelCreateForm
+                  modelformVisible={modelformVisible}
+                  setModelformVisible={setModelformVisible}
+                />
+              </List.Item>
+            );
+          }}
+        ></List>
       </ProCard>
     </Flex>
   );

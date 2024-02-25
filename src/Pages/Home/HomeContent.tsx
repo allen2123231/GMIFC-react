@@ -1,11 +1,12 @@
 import { ProCard, useBreakpoint } from "@ant-design/pro-components";
 import { Button, Col, Flex, message, theme } from "antd";
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import useStyle from "../layoutStyle";
 
 import AssestManagement from "./AssestManagement";
 import ProfileContent from "./ProfileContent";
 import { moduleData } from "../../assets/data/moduleData";
+import { useSize } from "ahooks";
 
 const HomeContent: FC = () => {
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
@@ -14,6 +15,9 @@ const HomeContent: FC = () => {
 
   const { token } = theme.useToken();
   const { styles } = useStyle();
+
+  const assestsManagementRef = useRef<HTMLDivElement | null>(null);
+  const assestsManagementHeight = useSize(assestsManagementRef)?.height;
 
   const curentScreen = useBreakpoint();
 
@@ -34,21 +38,26 @@ const HomeContent: FC = () => {
     >
       {contextHolder}
       <Col flex="auto">
-        <ProCard
-          title="Assests management"
-          headStyle={{
-            paddingInline: token.paddingMD,
-            paddingTop: token.paddingSM,
-          }}
-          bodyStyle={{
-            paddingInline: token.paddingMD,
-            paddingTop: token.paddingSM,
-            paddingBottom: 0,
-          }}
-          className={styles.card}
-        >
-          <AssestManagement listData={moduleData} />
-        </ProCard>
+        <div ref={assestsManagementRef} style={{ height: "100%" }}>
+          <ProCard
+            title="Assests management"
+            headStyle={{
+              paddingInline: token.paddingMD,
+              paddingTop: token.paddingSM,
+            }}
+            bodyStyle={{
+              paddingInline: token.paddingMD,
+              paddingTop: token.paddingSM,
+              paddingBottom: 0,
+            }}
+            className={styles.card}
+          >
+            <AssestManagement
+              listData={moduleData}
+              assestsManagementheight={assestsManagementHeight}
+            />
+          </ProCard>
+        </div>
       </Col>
       <Col>
         <ProCard

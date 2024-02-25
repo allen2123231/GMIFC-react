@@ -11,13 +11,27 @@ export type TAssestListingData = AssestListingProps;
 
 interface AssestManagementProps {
   listData: TAssestListingData[];
+  assestsManagementheight: number | undefined;
 }
 
-const AssestManagement: FC<AssestManagementProps> = ({ listData }) => {
+const AssestManagement: FC<AssestManagementProps> = ({
+  listData,
+  assestsManagementheight,
+}) => {
+  const assestsManagementBodyHeight = assestsManagementheight
+    ? assestsManagementheight - 38 - 12
+    : 0;
+  console.log(assestsManagementheight);
+  console.log(assestsManagementBodyHeight);
   return (
     <Flex vertical style={{ height: "100%" }}>
       {listData.map((data, key) => (
-        <AssestListing title={data.title} iconName={data.iconName} key={key} />
+        <AssestListing
+          title={data.title}
+          iconName={data.iconName}
+          key={key}
+          totalHeight={assestsManagementBodyHeight}
+        />
       ))}
     </Flex>
   );
