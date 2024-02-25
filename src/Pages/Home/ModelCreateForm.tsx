@@ -6,6 +6,7 @@ import {
 import { DatePicker, Modal, Space } from "antd";
 import { FC, useRef } from "react";
 import dayjs from "dayjs";
+import IFCViewer from "../../components/open_BIM_components/IFCviwer";
 
 interface ModelCreateFormProps {
   modelformVisible: boolean;
@@ -17,6 +18,7 @@ const ModelCreateForm: FC<ModelCreateFormProps> = ({
   setModelformVisible,
 }) => {
   const formRef = useRef();
+  const spaceRef = useRef<HTMLDivElement>();
 
   const handelOnFinish = async (values: undefined) => {
     console.log(values);
@@ -28,6 +30,7 @@ const ModelCreateForm: FC<ModelCreateFormProps> = ({
     <StepsForm
       onFinish={handelOnFinish}
       formRef={formRef}
+      stepsProps={{ direction: "vertical" }}
       stepsFormRender={(dom, submitter) => {
         return (
           <Modal
@@ -60,7 +63,7 @@ const ModelCreateForm: FC<ModelCreateFormProps> = ({
           width="lg"
           label="Name"
           placeholder="Enter Model Name"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Please enter Model Name!" }]}
         />
         <Space direction="vertical" style={{ marginBottom: 24 }}>
           <span>Build Day</span>
@@ -73,13 +76,19 @@ const ModelCreateForm: FC<ModelCreateFormProps> = ({
           placeholder="Enter Model Description"
         />
       </StepsForm.StepForm>
+      {/* //步驟二 */}
       <StepsForm.StepForm
         name="Upload_Model"
         title="Upload Model"
         onFinish={async () => {
           return true;
         }}
-      ></StepsForm.StepForm>
+      >
+        <Space direction="vertical" style={{ marginBottom: 24 }}>
+          <span>Preview</span>
+          <IFCViewer />
+        </Space>
+      </StepsForm.StepForm>
       <StepsForm.StepForm
         name="Publish_Model"
         title="Publish Model"
