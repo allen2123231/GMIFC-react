@@ -30,7 +30,10 @@ const AppLayout: FC = () => {
         // }`}
         width={160}
         collapsedWidth={48}
-        style={{ boxShadow: token.boxShadow }}
+        style={{
+          boxShadow: token.boxShadow,
+          zIndex: 3,
+        }}
         trigger={null}
         collapsible
         collapsed={sideBarState}
