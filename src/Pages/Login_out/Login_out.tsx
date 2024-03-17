@@ -18,7 +18,7 @@ import {
 import logo from "../../assets/img/GM_Logo_png (白).png";
 import { ThemeProvider } from "antd-style";
 
-import { datebase } from "../../firebase.config";
+import { firebaseDB } from "../../firebase.config";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import ContinueWithGoogle from "./ContinueWithGoogle";
 import LoginContent from "./LoginContent";
@@ -84,7 +84,7 @@ const Login_out: FC = () => {
         uid: user?.uid,
         timestamp: serverTimestamp(),
       };
-      await setDoc(doc(datebase, "users", user?.uid), userdata);
+      await setDoc(doc(firebaseDB, "users", user?.uid), userdata);
       messageApi.open({
         type: "success",
         content: "Sign up was success",

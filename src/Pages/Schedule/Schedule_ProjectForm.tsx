@@ -1,6 +1,18 @@
-import { ModalForm, ProFormText } from "@ant-design/pro-components";
+import * as Firestore from "firebase/firestore";
+import {
+  ModalForm,
+  ProFormInstance,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+} from "@ant-design/pro-components";
 import { MessageInstance } from "antd/es/message/interface";
-import { FC } from "react";
+import { FC, useRef } from "react";
+import { Iproject } from "../../class/project";
+import { getCollections } from "../../firebase.config";
+import { ProjectsManager } from "../../class/ProjectsManager";
+
+const projectManager = new ProjectsManager();
 
 interface IProjectFormProps {
   modalVisible: boolean;
@@ -12,18 +24,73 @@ const CreateProjectForm: FC<IProjectFormProps> = ({
   setmodalVisible,
   messageApi,
 }) => {
+  const formRef = useRef<ProFormInstance>();
+
+  const firebaseProjectCollection = getCollections<Iproject>("/projects");
+
+  const onFinish = async () => {
+    const getFormValue = await formRef.current?.getFieldsValue();
+    const uploadData: Iproject = {
+      name: getFormValue?.name,
+      status: getFormValue?.status?.value,
+      description: getFormValue?.description,
+    };
+
+    try {
+      const project = projectManager.newProject(uploadData);
+      Firestore.addDoc(firebaseProjectCollection, uploadData);
+      messageApi?.success("Project created successfully");
+      setmodalVisible(false);
+      console.log(project);
+      formRef.current?.resetFields();
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  };
+
   return (
     <ModalForm
       title="Create project"
+      width={450}
       open={modalVisible}
       onOpenChange={setmodalVisible}
-      onFinish={async () => {
-        messageApi?.success("Project created successfully");
-        setmodalVisible(false);
-        return true;
+      onFinish={onFinish}
+      submitter={{
+        searchConfig: { submitText: "Create", resetText: "Cancel" },
       }}
+      requiredMark={false}
+      formRef={formRef}
     >
-      <ProFormText name="name" label="Name" />
+      <ProFormText
+        name="name"
+        label={"Project Name"}
+        labelAlign="right"
+        width="lg"
+        placeholder="Please enter project name"
+        rules={[{ required: true, message: "Please enter project name" }]}
+      />
+      <ProFormSelect
+        name="status"
+        label="Status"
+        width="lg"
+        fieldProps={{
+          labelInValue: true,
+        }}
+        request={async () => [
+          { label: "Design", value: "Design" },
+          { label: "Detail Design", value: "Detail Design" },
+          { label: "Fabrication", value: "Fabrication" },
+          { label: "Finish", value: "Finish" },
+        ]}
+        placeholder={"Please select project status"}
+      />
+      <ProFormTextArea
+        name="description"
+        label="Description"
+        width="lg"
+        placeholder="Please enter project description"
+      />
     </ModalForm>
   );
 };

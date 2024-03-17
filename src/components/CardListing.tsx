@@ -1,15 +1,21 @@
 import { Button, Card, List, theme } from "antd";
 import React, { FC, useState } from "react";
 
-import { PlusOutlined } from "@ant-design/icons";
+import { DeleteFilled, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
-import fakeCardDatalist, { IfakeCardData } from "../assets/data/fakeCardData";
+import { Project } from "../class/project";
+
+import testImg from "../assets/img/testImg.png";
 
 interface ICardlistingProps {
   createOnClick?: () => void;
+  projectslistData: Project[];
 }
 
-const Cardlisting: FC<ICardlistingProps> = ({ createOnClick }) => {
+const Cardlisting: FC<ICardlistingProps> = ({
+  createOnClick,
+  projectslistData,
+}) => {
   const [isHoveringID, setIsHoveringID] = useState("");
   const { token } = theme.useToken();
 
@@ -19,7 +25,6 @@ const Cardlisting: FC<ICardlistingProps> = ({ createOnClick }) => {
   const handleMouseLeave = () => {
     setIsHoveringID("");
   };
-  console.log(isHoveringID);
   return (
     <List
       grid={{
@@ -32,25 +37,33 @@ const Cardlisting: FC<ICardlistingProps> = ({ createOnClick }) => {
         xxl: 5,
       }}
       // style={{ maxHeight: "80%", overflow: "auto" }}
-      dataSource={[{}, ...fakeCardDatalist]}
-      renderItem={(item: IfakeCardData) => {
-        if (item && item.id) {
+      dataSource={[
+        { name: "button", status: "Finish", description: "", id: "button" },
+        ...projectslistData,
+      ]}
+      renderItem={(item: Project) => {
+        if (item.id !== "button") {
           return (
             <List.Item
               key={item.id}
               style={{
                 width: "100%",
                 height: "auto",
-                aspectRatio: 16 / 9,
+                aspectRatio: 16 / 14,
                 marginBottom: token.marginXL,
               }}
             >
               <Card
                 id={item.id}
+                cover={<img alt="example" src={testImg} />}
                 style={{
+                  display: "flex",
+                  flexDirection: "column",
                   width: "100%",
-                  height: "auto",
-                  aspectRatio: 16 / 9,
+                  aspectRatio: 16 / 14,
+                  border: 0,
+                  fontSize: "12px",
+                  cursor: isHoveringID === item.id ? "pointer" : "default",
                   transform:
                     isHoveringID === item.id
                       ? "translateY(-16px)"
@@ -61,10 +74,28 @@ const Cardlisting: FC<ICardlistingProps> = ({ createOnClick }) => {
                       : token.boxShadowTertiary,
                   transition: "all 0.5s",
                 }}
+                styles={{
+                  body: { padding: 8, flex: "auto" },
+                  cover: { flex: 1, width: "100%", margin: 0 },
+                  actions: { flex: 1 },
+                }}
+                actions={[
+                  <EditOutlined key="edit" />,
+                  <DeleteFilled
+                    key="deket"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      console.log("delet click");
+                    }}
+                  />,
+                ]}
                 onMouseOver={handleMouseOver}
                 onMouseLeave={handleMouseLeave}
+                onClick={() => {
+                  console.log(item.id);
+                }}
               >
-                <Card.Meta title={item.title} />
+                <Card.Meta title={item.name} description={item.description} />
               </Card>
             </List.Item>
           );
@@ -76,7 +107,7 @@ const Cardlisting: FC<ICardlistingProps> = ({ createOnClick }) => {
               style={{
                 width: "100%",
                 height: "auto",
-                aspectRatio: "16/9",
+                aspectRatio: 16 / 14,
                 marginBottom: token.margin,
               }}
               onClick={createOnClick}

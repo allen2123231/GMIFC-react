@@ -10,7 +10,7 @@ import PasswordCheck from "../Cridential/PasswordCheck";
 import ForgotPasswordModal from "../Cridential/ForgotPasswordModal";
 import { getAuth, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
-import { datebase } from "../../firebase.config";
+import { firebaseDB } from "../../firebase.config";
 import { MessageInstance } from "antd/es/message/interface";
 
 interface ProfileContentProps {
@@ -72,7 +72,7 @@ const ProfileContent: FC<ProfileContentProps> = ({
         if (auth.currentUser.displayName !== curName) {
           await updateProfile(auth.currentUser, { displayName: curName });
         }
-        const docRef = doc(datebase, "users", auth.currentUser?.uid);
+        const docRef = doc(firebaseDB, "users", auth.currentUser?.uid);
         await updateDoc(docRef, { username: curName });
         messageApi.success("Profile updated");
         setDisEditabled(true);

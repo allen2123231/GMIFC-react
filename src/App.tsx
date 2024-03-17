@@ -35,8 +35,9 @@ function App() {
                   innerMinMargin: 2,
                 },
                 Select: {
-                  selectorBg: "#ffffff",
-                  optionActiveBg: "#d70036",
+                  // selectorBg: "#ffffff",
+                  // optionActiveBg: "#d70036",
+                  optionSelectedBg: "#d2e3fe",
                 },
                 Input: {
                   addonBg: "#0000000d",
@@ -49,6 +50,8 @@ function App() {
                 colorBgBase: "#122033",
                 colorText: "#ffffffd8",
                 colorPrimary: "#d70036",
+                colorBorder: "#ffffff1f",
+                colorBorderSecondary: "#ffffff1f",
                 boxShadow:
                   "0px 1px 2px -2px rgba(0, 0, 0, 0.34), 0px 3px 6px 0px rgba(0, 0, 0, 0.3), 0px 5px 12px 4px rgba(0, 0, 0, 0.26)",
               },
@@ -61,6 +64,9 @@ function App() {
                 },
                 Button: {
                   textHoverBg: "#192b44",
+                },
+                Select: {
+                  optionSelectedBg: "#2d4f7e",
                 },
                 Switch: {
                   trackMinWidth: 36,

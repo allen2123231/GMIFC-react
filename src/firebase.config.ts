@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
+import * as Firestore from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,6 +17,26 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const app = initializeApp(firebaseConfig);
-export const datebase = getFirestore();
-const analytics = getAnalytics(app);
+export const firebaseDB = Firestore.getFirestore();
+
+export const getCollections = <T>(path: string) => {
+  return Firestore.collection(
+    firebaseDB,
+    path
+  ) as Firestore.CollectionReference<T>;
+};
+
+export const deleteDocument = async (collectionPath: string, docId: string) => {
+  const doc = Firestore.doc(firebaseDB, `${collectionPath}/${docId}`);
+  await Firestore.deleteDoc(doc);
+};
+export const updateDocument = <T extends Record<string, any>>(
+  collectionPath: string,
+  id: string,
+  data: T
+) => {
+  const doc = Firestore.doc(firebaseDB, `${collectionPath}/${id}`);
+  Firestore.updateDoc(doc, data);
+};

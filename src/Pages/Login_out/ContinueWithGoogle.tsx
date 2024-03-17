@@ -4,7 +4,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 import GoogleSvg from "./googleIcon";
 import { MessageInstance } from "antd/es/message/interface";
-import { datebase } from "../../firebase.config";
+import { firebaseDB } from "../../firebase.config";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +33,7 @@ const ContinueWithGoogle: FC<IContinueWithGoogleProps> = ({ messageApi }) => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       // check for the user
-      const docRef = doc(datebase, "users", user.uid);
+      const docRef = doc(firebaseDB, "users", user.uid);
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
         await setDoc(docRef, {
