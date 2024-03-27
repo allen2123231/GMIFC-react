@@ -2,36 +2,40 @@ import { FC, useEffect, useState } from "react";
 
 import * as Firestore from "firebase/firestore";
 
-import { Layout, message } from "antd";
+import { AutoComplete, Input, Layout, message } from "antd";
 
-import HeaderContent from "./Schedule_HeaderContent";
-import useStyle from "../layoutStyle";
+import HeaderContent from "../../components/HeaderContent";
+import useLayoutStyle from "../layoutStyle";
 import Cardlisting from "../../components/CardListing";
 import CreateProjectForm from "./Schedule_ProjectForm";
 import { getCollections } from "../../firebase.config";
 import { Iproject, Project } from "../../class/project";
 import { ProjectsManager } from "../../class/ProjectsManager";
+import Breadcrumbs from "../../components/Header_Breadcrumb";
 
 const { Header, Content } = Layout;
-const projetManager = new ProjectsManager();
 const projectCollection = getCollections<Iproject>("/projects");
 
-const Schedule: FC = () => {
-  const { styles } = useStyle();
+interface IscheduleProps {
+  projectsManager: ProjectsManager;
+}
+
+const Schedule: FC<IscheduleProps> = ({ projectsManager }) => {
+  const { styles } = useLayoutStyle();
   const [messageApi, contextHolder] = message.useMessage();
 
   const [projectslist, setprojectslist] = useState<Project[]>(
-    projetManager.projectlist
+    projectsManager.projectlist
   );
   const [modalVisible, setModalVisible] = useState(false);
   const handelOpenModal = () => {
     setModalVisible(true);
   };
 
-  projetManager.onProjectCreated = () => {
-    setprojectslist([...projetManager.projectlist]);
+  projectsManager.onProjectCreated = () => {
+    setprojectslist([...projectsManager.projectlist]);
   };
-
+  // 從firebase取得project資料
   const getFirestoreProjects = async () => {
     const firestoreDocs = await Firestore.getDocs(projectCollection);
     for (const doc of firestoreDocs.docs) {
@@ -40,31 +44,32 @@ const Schedule: FC = () => {
         ...firestoreProjects,
       };
       try {
-        projetManager.newProject(project, doc.id);
+        projectsManager.newProject(project, doc.id);
       } catch (error) {
         console.log(error);
       }
     }
   };
-
+  //在componentDidMount時取得firebase資料
   useEffect(() => {
     getFirestoreProjects();
   }, []);
   console.log(projectslist);
 
   return (
-    <Layout style={{ maxHeight: "100vh", overflowY: "scroll" }}>
+    <Layout className={styles.layout}>
       {contextHolder}
-      <Header
-        className={styles.header}
-        style={{ position: "sticky", top: 0, zIndex: 1 }}
-      >
-        <HeaderContent />
+      <Header className={styles.header}>
+        <HeaderContent
+          col1={<Breadcrumbs />}
+          col2={
+            <AutoComplete style={{ width: "80%", alignItems: "center" }}>
+              <Input.Search placeholder="Search" enterButton />
+            </AutoComplete>
+          }
+        />
       </Header>
-      <Content
-        className={styles.content}
-        style={{ maxHeight: "100%", zIndex: 0 }}
-      >
+      <Content className={styles.content}>
         <Cardlisting
           createOnClick={handelOpenModal}
           projectslistData={projectslist}
@@ -73,6 +78,7 @@ const Schedule: FC = () => {
           modalVisible={modalVisible}
           setmodalVisible={setModalVisible}
           messageApi={messageApi}
+          projectsManager={projectsManager}
         />
       </Content>
     </Layout>

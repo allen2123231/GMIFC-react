@@ -6,6 +6,7 @@ import { DeleteFilled, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Project } from "../class/project";
 
 import testImg from "../assets/img/testImg.png";
+import { Link } from "react-router-dom";
 
 interface ICardlistingProps {
   createOnClick?: () => void;
@@ -47,56 +48,63 @@ const Cardlisting: FC<ICardlistingProps> = ({
             <List.Item
               key={item.id}
               style={{
-                width: "100%",
-                height: "auto",
-                aspectRatio: 16 / 14,
                 marginBottom: token.marginXL,
               }}
             >
-              <Card
-                id={item.id}
-                cover={<img alt="example" src={testImg} />}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  aspectRatio: 16 / 14,
-                  border: 0,
-                  fontSize: "12px",
-                  cursor: isHoveringID === item.id ? "pointer" : "default",
-                  transform:
-                    isHoveringID === item.id
-                      ? "translateY(-16px)"
-                      : "translateY(0px)",
-                  boxShadow:
-                    isHoveringID === item.id
-                      ? token.boxShadow
-                      : token.boxShadowTertiary,
-                  transition: "all 0.5s",
-                }}
-                styles={{
-                  body: { padding: 8, flex: "auto" },
-                  cover: { flex: 1, width: "100%", margin: 0 },
-                  actions: { flex: 1 },
-                }}
-                actions={[
-                  <EditOutlined key="edit" />,
-                  <DeleteFilled
-                    key="deket"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      console.log("delet click");
-                    }}
-                  />,
-                ]}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => {
-                  console.log(item.id);
-                }}
-              >
-                <Card.Meta title={item.name} description={item.description} />
-              </Card>
+              <Link to={`/Schedule/ProjectDetail/${item.id}`} key={item.id}>
+                <Card
+                  id={item.id}
+                  cover={<img alt="example" src={testImg} />}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    border: 0,
+                    fontSize: "12px",
+                    cursor: isHoveringID === item.id ? "pointer" : "default",
+                    transform:
+                      isHoveringID === item.id
+                        ? "translateY(-16px)"
+                        : "translateY(0px)",
+                    boxShadow:
+                      isHoveringID === item.id
+                        ? token.boxShadow
+                        : token.boxShadowTertiary,
+                    transition: "all 0.5s",
+                  }}
+                  styles={{
+                    body: {
+                      padding: 8,
+                      overflow: "hidden",
+                      height: "56px",
+                    },
+                    cover: {
+                      flex: 1,
+                      width: "100%",
+                      aspectRatio: 16 / 9,
+                      margin: 0,
+                    },
+                    actions: { height: "32px" },
+                  }}
+                  actions={[
+                    <EditOutlined key="edit" />,
+                    <DeleteFilled
+                      key="deket"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        console.log("delet click");
+                      }}
+                    />,
+                  ]}
+                  onMouseOver={handleMouseOver}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    console.log(item.id);
+                  }}
+                >
+                  <Card.Meta title={item.name} description={item.description} />
+                </Card>
+              </Link>
             </List.Item>
           );
         }
@@ -107,12 +115,28 @@ const Cardlisting: FC<ICardlistingProps> = ({
               style={{
                 width: "100%",
                 height: "auto",
-                aspectRatio: 16 / 14,
-                marginBottom: token.margin,
+                padding: "0",
+                borderRadius: "8px",
+                marginBottom: "16px",
               }}
               onClick={createOnClick}
             >
-              <PlusOutlined style={{ fontSize: "32px" }} />
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  aspectRatio: 16 / 9,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <PlusOutlined style={{ fontSize: "48px", marginTop: 32 }} />
+              </div>
+              <div style={{ height: "73px" }}>
+                <p style={{ textAlign: "center", fontSize: 16 }}>
+                  Create New Project
+                </p>
+              </div>
             </Button>
           </List.Item>
         );

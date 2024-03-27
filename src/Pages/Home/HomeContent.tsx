@@ -1,7 +1,7 @@
 import { ProCard, useBreakpoint } from "@ant-design/pro-components";
 import { Button, Col, Flex, message, theme } from "antd";
 import { FC, useRef, useState } from "react";
-import useStyle from "../layoutStyle";
+import useLayoutStyle from "../layoutStyle";
 
 import AssestManagement from "./AssestManagement";
 import ProfileContent from "./ProfileContent";
@@ -14,7 +14,7 @@ const HomeContent: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { token } = theme.useToken();
-  const { styles } = useStyle();
+  const { styles } = useLayoutStyle();
 
   const assestsManagementRef = useRef<HTMLDivElement | null>(null);
   const assestsManagementHeight = useSize(assestsManagementRef)?.height;

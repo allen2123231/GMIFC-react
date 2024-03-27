@@ -12,17 +12,17 @@ import { Iproject } from "../../class/project";
 import { getCollections } from "../../firebase.config";
 import { ProjectsManager } from "../../class/ProjectsManager";
 
-const projectManager = new ProjectsManager();
-
 interface IProjectFormProps {
   modalVisible: boolean;
   setmodalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   messageApi?: MessageInstance;
+  projectsManager: ProjectsManager;
 }
 const CreateProjectForm: FC<IProjectFormProps> = ({
   modalVisible,
   setmodalVisible,
   messageApi,
+  projectsManager,
 }) => {
   const formRef = useRef<ProFormInstance>();
 
@@ -33,11 +33,11 @@ const CreateProjectForm: FC<IProjectFormProps> = ({
     const uploadData: Iproject = {
       name: getFormValue?.name,
       status: getFormValue?.status?.value,
-      description: getFormValue?.description,
+      description: getFormValue?.description || null,
     };
 
     try {
-      const project = projectManager.newProject(uploadData);
+      const project = projectsManager.newProject(uploadData);
       Firestore.addDoc(firebaseProjectCollection, uploadData);
       messageApi?.success("Project created successfully");
       setmodalVisible(false);

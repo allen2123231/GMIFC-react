@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import { FC, useEffect } from "react";
-import useStyle from "../layoutStyle";
+import useLayoutStyle from "../layoutStyle";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLocation } from "../../store/location";
@@ -10,7 +10,7 @@ import HomeContent from "./HomeContent";
 const { Content } = Layout;
 
 const Home: FC = () => {
-  const { styles } = useStyle();
+  const { styles } = useLayoutStyle();
 
   const dispatch = useDispatch();
 

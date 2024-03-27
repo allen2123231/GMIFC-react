@@ -5,13 +5,17 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import AppLayout from "./Layout/AppLayout";
-import Schedule from "./Pages/Schedule/Schedule";
+import Schedule from "./Pages/Schedule/SchedulePage";
 import Fabrication from "./Pages/Fabrication/Fabrication";
 import Model from "./Pages/Model/Model";
 import Login_out from "./Pages/Login_out/Login_out";
 import Home from "./Pages/Home/Home";
 import useAuthStatus from "./hook/useAuthStatus";
 import { Spin } from "antd";
+import ProjectDetail from "./Pages/Schedule/ProjectDetailPage";
+import { ProjectsManager } from "./class/ProjectsManager";
+
+const projectsManager = new ProjectsManager();
 
 export const Router: FC = () => {
   const { loggedIn, loading } = useAuthStatus();
@@ -42,7 +46,11 @@ export const Router: FC = () => {
         },
         {
           path: "Schedule",
-          element: <Schedule />,
+          element: <Schedule projectsManager={projectsManager} />,
+        },
+        {
+          path: "Schedule/ProjectDetail/:FirestoreProjectId",
+          element: <ProjectDetail projectsManager={projectsManager} />,
         },
         {
           path: "Login",

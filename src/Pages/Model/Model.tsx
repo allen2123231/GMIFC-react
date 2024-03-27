@@ -1,12 +1,12 @@
 import { Layout } from "antd";
 import { FC } from "react";
 import HeaderContent_Model from "./HeaderContent";
-import useStyle from "../layoutStyle";
+import useLayoutStyle from "../layoutStyle";
 
 const { Header, Content } = Layout;
 
 const Model: FC = () => {
-  const { styles } = useStyle();
+  const { styles } = useLayoutStyle();
   return (
     <Layout>
       <Header className={styles.header}>

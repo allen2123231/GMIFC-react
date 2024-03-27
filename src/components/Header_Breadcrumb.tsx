@@ -2,12 +2,8 @@ import { Breadcrumb } from "antd";
 import { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import {
-  setFabricationState,
-  setModelState,
-  setScheduleState,
-} from "../store/moduleStateSlice";
 import { setLocation } from "../store/location";
+import { Project } from "../class/project";
 
 const ModuelList = [
   {
@@ -24,7 +20,11 @@ const ModuelList = [
   },
 ];
 
-const Breadcrumbs: FC = () => {
+interface IBreadcrumbProps {
+  project?: Project;
+}
+
+const Breadcrumbs: FC<IBreadcrumbProps> = ({ project }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const pathnames = location.pathname.split("/").filter((x) => x);
@@ -45,28 +45,17 @@ const Breadcrumbs: FC = () => {
           title: isCurrent ? (
             <span>{pathnames}</span>
           ) : (
-            <Link to={pathnames[0]}>{pathnames}</Link>
+            <Link to={`/${pathnames[0]}`}>{pathnames[0]}</Link>
           ),
           menu: {
             items: MenuitemsProps.map((item) => ({
-              title: (
-                <Link
-                  to={item.path}
-                  onClick={() => {
-                    item.title === "Model"
-                      ? dispatch(setModelState())
-                      : item.title === "Fabrication"
-                      ? dispatch(setFabricationState())
-                      : dispatch(setScheduleState());
-                  }}
-                >
-                  {item.title}{" "}
-                </Link>
-              ),
+              title: <Link to={item.path}>{item.title} </Link>,
             })),
           },
         },
-        { title: "" },
+        pathnames.length > 1
+          ? { title: `Project: ${project?.name}` }
+          : { title: "" },
       ]}
     />
   );

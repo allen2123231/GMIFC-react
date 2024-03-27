@@ -1,15 +1,17 @@
+import { FC, useState } from "react";
+
 import {
   ProFormCheckbox,
   ProFormInstance,
   ProFormText,
   useBreakpoint,
 } from "@ant-design/pro-components";
-import { FC, useState } from "react";
-import Icon from "../../components/Icon";
 import { GlobalToken } from "antd";
-import useStyle from "../../Layout/uiStyle";
 import { MessageInstance } from "antd/es/message/interface";
+
 import ForgotPasswordModal from "../Cridential/ForgotPasswordModal";
+import useLayoutStyle from "../../Layout/uiStyle";
+import Icon from "../../components/Icon";
 
 interface LoginContentProps {
   token: GlobalToken;
@@ -20,7 +22,7 @@ interface LoginContentProps {
 const LoginContent: FC<LoginContentProps> = ({ token, messageApi }) => {
   const [openModal, setOpenModal] = useState(false);
   const curentScreen = useBreakpoint();
-  const { styles } = useStyle();
+  const { styles } = useLayoutStyle();
 
   const handleOpenModal = () => {
     setOpenModal(true);

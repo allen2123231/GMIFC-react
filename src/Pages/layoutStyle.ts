@@ -1,7 +1,11 @@
 import { createStyles } from "antd-style";
 
-const useStyle = createStyles(({ token }) => {
+const useLayoutStyle = createStyles(({ token }) => {
   return {
+    layout: {
+      maxHeight: "100vh",
+      overflowY: "scroll",
+    },
     header: {
       display: "flex",
       justifyContent: "left",
@@ -21,4 +25,4 @@ const useStyle = createStyles(({ token }) => {
   };
 });
 
-export default useStyle;
+export default useLayoutStyle;

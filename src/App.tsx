@@ -27,7 +27,7 @@ function App() {
               components: {
                 Layout: {
                   lightSiderBg: "#ffffff",
-                  headerHeight: 48,
+                  headerHeight: 56,
                   headerPadding: "0px",
                 },
                 Switch: {
@@ -58,7 +58,7 @@ function App() {
               components: {
                 Layout: {
                   siderBg: "#071223",
-                  headerHeight: 48,
+                  headerHeight: 56,
                   headerBg: "#122033",
                   headerPadding: "16px",
                 },
