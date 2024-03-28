@@ -1,6 +1,6 @@
 import { FC, useRef } from "react";
 import { ProjectsManager } from "../../class/ProjectsManager";
-import { AutoComplete, Button, Card, Input, Layout } from "antd";
+import { AutoComplete, Button, Card, Col, Input, Layout, Row } from "antd";
 import useLayoutStyle from "../layoutStyle";
 import HeaderContent from "../../components/HeaderContent";
 import Breadcrumbs from "../../components/Header_Breadcrumb";
@@ -26,6 +26,7 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
     ref: React.RefObject<ImperativePanelGroupHandle>,
     v1: number
   ) => {
+    // 佈局變更
     const panelGroup = ref.current;
     if (panelGroup?.getLayout()[0] !== 0) {
       panelGroup!.setLayout([0, 100]);
@@ -38,9 +39,9 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
     changePanelLayout(projectDetailRef, 30)!;
   };
   const hideSide = () => {
-    changePanelLayout(sideRef, 20)!;
+    changePanelLayout(sideRef, 25)!;
   };
-
+  // 屏幕尺寸更改佈局
   const curentScreen = useBreakpoint();
   const verticalScreen = ["xs", "sm"];
   const isVertical = verticalScreen.includes(curentScreen!);
@@ -88,13 +89,25 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
             }}
           >
             <PanelGroup direction="vertical" ref={projectDetailRef}>
-              <Panel collapsible collapsedSize={0}>
+              <Panel defaultSize={25}>
                 <Card
                   style={{ height: "100%" }}
+                  styles={{ header: { paddingInline: 16 } }}
                   title={project!.name}
                   extra={
-                    <Button type="default" shape="default" size="small">
-                      edit
+                    <Button
+                      type="text"
+                      shape="default"
+                      size="small"
+                      style={{
+                        display: "flex",
+                        height: "100%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span className="material-symbols-rounded">
+                        edit_note
+                      </span>
                     </Button>
                   }
                 ></Card>
@@ -103,17 +116,48 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
               <Panel>
                 <Card
                   style={{ height: "100%" }}
+                  styles={{
+                    header: {
+                      paddingInline: 16,
+                    },
+                    body: {
+                      display: "flex",
+                      padding: 16,
+                      height: "100%",
+                    },
+                  }}
                   title={
-                    <>
-                      <span style={{ marginInlineEnd: 24 }}>To-do List</span>
-                      <Input.Search
-                        placeholder="Search"
-                        style={{ width: "50%" }}
-                        enterButton
-                      />
-                    </>
+                    <Row>
+                      <Col
+                        span={12}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <span>To-do List</span>
+                      </Col>
+                      <Col
+                        span={12}
+                        style={{ display: "flex", justifyContent: "end" }}
+                      >
+                        <Input.Search
+                          placeholder="Search"
+                          style={{ width: "100%" }}
+                        />
+                      </Col>
+                    </Row>
                   }
-                ></Card>
+                >
+                  <Button
+                    type="dashed"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <span style={{ marginRight: 8 }}>Add a mission</span>
+                    <span className="material-symbols-rounded">add</span>
+                  </Button>
+                </Card>
               </Panel>
             </PanelGroup>
           </Panel>

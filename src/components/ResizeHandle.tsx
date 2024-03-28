@@ -15,9 +15,9 @@ const ResizeHandle: FC<IResizeHandleProps> = ({ isVertical, dbClick }) => {
         icon={
           <span
             className="material-symbols-rounded"
-            style={{ fontSize: "16px" }}
+            style={isVertical ? { rotate: "90deg" } : {}}
           >
-            compare_arrows
+            drag_indicator
           </span>
         }
         style={{
