@@ -6,6 +6,9 @@ import HeaderContent from "../../components/HeaderContent";
 import Breadcrumbs from "../../components/Header_Breadcrumb";
 import { useParams } from "react-router-dom";
 import { StepBackwardFilled, StepForwardOutlined } from "@ant-design/icons";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import ResizeHandle from "../../components/ResizeHandle";
+import { useBreakpoint } from "@ant-design/pro-components";
 
 interface IProjectDetailProps {
   projectsManager: ProjectsManager;
@@ -13,11 +16,18 @@ interface IProjectDetailProps {
 const { Header, Content } = Layout;
 
 const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
-  const [leftIsHide, setLeftIsHide] = useState(false);
+  const [projectDetailIsHide, setprojectDetailIsHide] = useState(false);
+  console.log(projectDetailIsHide);
+
+  const curentScreen = useBreakpoint();
+  const verticalScreen = ["xs", "sm"];
+  const isVertical = verticalScreen.includes(curentScreen!);
+  console.log(curentScreen);
 
   const { styles } = useLayoutStyle();
   const projectId = useParams<{ FirestoreProjectId: string }>();
   console.log(projectId.FirestoreProjectId);
+
   if (!projectId.FirestoreProjectId) {
     return <p>Project ID is needed to see this page</p>;
   }
@@ -42,9 +52,56 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
       </Header>
       <Content
         className={styles.content}
-        style={{ paddingInline: 16, paddingTop: 4 }}
+        style={{ padding: 16, paddingTop: 0 }}
       >
-        <Row style={{ width: "100%", height: "100%", margin: 0 }}>
+        <PanelGroup direction={isVertical ? "vertical" : "horizontal"}>
+          <Panel
+            defaultSize={25}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {projectDetailIsHide || (
+              <Card
+                style={{ height: "30%", marginBottom: "20px" }}
+                title={project.name}
+                extra={
+                  <Button
+                    type="default"
+                    shape="default"
+                    size="small"
+                    onClick={() => {
+                      setprojectDetailIsHide(true);
+                      console.log(projectDetailIsHide);
+                    }}
+                  >
+                    edit
+                  </Button>
+                }
+              ></Card>
+            )}
+            <Card
+              style={{ flex: "1" }}
+              extra={
+                projectDetailIsHide && (
+                  <Button
+                    onClick={() => {
+                      setprojectDetailIsHide(false);
+                    }}
+                  >
+                    hide
+                  </Button>
+                )
+              }
+            ></Card>
+          </Panel>
+          <ResizeHandle isVertical={isVertical} />
+          <Panel>
+            <Card style={{ height: "100%" }}></Card>
+          </Panel>
+        </PanelGroup>
+        {/* <Row style={{ width: "100%", height: "100%", margin: 0 }}>
           {leftIsHide && (
             <Col lg={6}>
               <Card style={{ height: "30%" }} title={project.name}></Card>
@@ -67,7 +124,7 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
           <Col lg={{ flex: "auto" }}>
             <Card style={{ height: "100%" }}></Card>
           </Col>
-        </Row>
+        </Row> */}
       </Content>
     </Layout>
   );
