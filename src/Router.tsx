@@ -27,6 +27,7 @@ export const Router: FC = () => {
     }
   };
   console.log(loggedIn);
+
   const router = createBrowserRouter([
     {
       path: "/",

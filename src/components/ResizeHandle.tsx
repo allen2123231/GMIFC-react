@@ -4,9 +4,10 @@ import { PanelResizeHandle } from "react-resizable-panels";
 
 interface IResizeHandleProps {
   isVertical?: boolean;
+  dbClick?: () => void;
 }
 
-const ResizeHandle: FC<IResizeHandleProps> = ({ isVertical }) => {
+const ResizeHandle: FC<IResizeHandleProps> = ({ isVertical, dbClick }) => {
   return (
     <PanelResizeHandle>
       <Button
@@ -27,6 +28,7 @@ const ResizeHandle: FC<IResizeHandleProps> = ({ isVertical }) => {
           width: isVertical ? "100%" : "20px",
           border: "none",
         }}
+        onDoubleClick={dbClick}
       />
     </PanelResizeHandle>
   );

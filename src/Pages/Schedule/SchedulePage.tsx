@@ -35,6 +35,7 @@ const Schedule: FC<IscheduleProps> = ({ projectsManager }) => {
   projectsManager.onProjectCreated = () => {
     setprojectslist([...projectsManager.projectlist]);
   };
+
   // 從firebase取得project資料
   const getFirestoreProjects = async () => {
     const firestoreDocs = await Firestore.getDocs(projectCollection);

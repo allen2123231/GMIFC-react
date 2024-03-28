@@ -1,12 +1,16 @@
-import { FC, useState } from "react";
+import { FC, useRef } from "react";
 import { ProjectsManager } from "../../class/ProjectsManager";
-import { AutoComplete, Button, Card, Col, Input, Layout, Row } from "antd";
+import { AutoComplete, Button, Card, Input, Layout } from "antd";
 import useLayoutStyle from "../layoutStyle";
 import HeaderContent from "../../components/HeaderContent";
 import Breadcrumbs from "../../components/Header_Breadcrumb";
 import { useParams } from "react-router-dom";
-import { StepBackwardFilled, StepForwardOutlined } from "@ant-design/icons";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+// import { StepBackwardFilled, StepForwardOutlined } from "@ant-design/icons";
+import {
+  ImperativePanelGroupHandle,
+  Panel,
+  PanelGroup,
+} from "react-resizable-panels";
 import ResizeHandle from "../../components/ResizeHandle";
 import { useBreakpoint } from "@ant-design/pro-components";
 
@@ -16,17 +20,35 @@ interface IProjectDetailProps {
 const { Header, Content } = Layout;
 
 const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
-  const [projectDetailIsHide, setprojectDetailIsHide] = useState(false);
-  console.log(projectDetailIsHide);
+  const sideRef = useRef<ImperativePanelGroupHandle>(null);
+  const projectDetailRef = useRef<ImperativePanelGroupHandle>(null);
+  const changePanelLayout = (
+    ref: React.RefObject<ImperativePanelGroupHandle>,
+    v1: number
+  ) => {
+    const panelGroup = ref.current;
+    if (panelGroup?.getLayout()[0] !== 0) {
+      panelGroup!.setLayout([0, 100]);
+      console.log(panelGroup!.getLayout());
+    } else {
+      panelGroup!.setLayout([v1, 100 - v1]);
+    }
+  };
+  const hideProjectDetail = () => {
+    changePanelLayout(projectDetailRef, 30)!;
+  };
+  const hideSide = () => {
+    changePanelLayout(sideRef, 20)!;
+  };
 
   const curentScreen = useBreakpoint();
   const verticalScreen = ["xs", "sm"];
   const isVertical = verticalScreen.includes(curentScreen!);
   console.log(curentScreen);
+  console.log(projectsManager.projectlist);
 
   const { styles } = useLayoutStyle();
   const projectId = useParams<{ FirestoreProjectId: string }>();
-  console.log(projectId.FirestoreProjectId);
 
   if (!projectId.FirestoreProjectId) {
     return <p>Project ID is needed to see this page</p>;
@@ -54,7 +76,10 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
         className={styles.content}
         style={{ padding: 16, paddingTop: 0 }}
       >
-        <PanelGroup direction={isVertical ? "vertical" : "horizontal"}>
+        <PanelGroup
+          direction={isVertical ? "vertical" : "horizontal"}
+          ref={sideRef}
+        >
           <Panel
             defaultSize={25}
             style={{
@@ -62,41 +87,37 @@ const ProjectDetail: FC<IProjectDetailProps> = ({ projectsManager }) => {
               flexDirection: "column",
             }}
           >
-            {projectDetailIsHide || (
-              <Card
-                style={{ height: "30%", marginBottom: "20px" }}
-                title={project.name}
-                extra={
-                  <Button
-                    type="default"
-                    shape="default"
-                    size="small"
-                    onClick={() => {
-                      setprojectDetailIsHide(true);
-                      console.log(projectDetailIsHide);
-                    }}
-                  >
-                    edit
-                  </Button>
-                }
-              ></Card>
-            )}
-            <Card
-              style={{ flex: "1" }}
-              extra={
-                projectDetailIsHide && (
-                  <Button
-                    onClick={() => {
-                      setprojectDetailIsHide(false);
-                    }}
-                  >
-                    hide
-                  </Button>
-                )
-              }
-            ></Card>
+            <PanelGroup direction="vertical" ref={projectDetailRef}>
+              <Panel collapsible collapsedSize={0}>
+                <Card
+                  style={{ height: "100%" }}
+                  title={project!.name}
+                  extra={
+                    <Button type="default" shape="default" size="small">
+                      edit
+                    </Button>
+                  }
+                ></Card>
+              </Panel>
+              <ResizeHandle isVertical={true} dbClick={hideProjectDetail} />
+              <Panel>
+                <Card
+                  style={{ height: "100%" }}
+                  title={
+                    <>
+                      <span style={{ marginInlineEnd: 24 }}>To-do List</span>
+                      <Input.Search
+                        placeholder="Search"
+                        style={{ width: "50%" }}
+                        enterButton
+                      />
+                    </>
+                  }
+                ></Card>
+              </Panel>
+            </PanelGroup>
           </Panel>
-          <ResizeHandle isVertical={isVertical} />
+          <ResizeHandle isVertical={isVertical} dbClick={hideSide} />
           <Panel>
             <Card style={{ height: "100%" }}></Card>
           </Panel>
